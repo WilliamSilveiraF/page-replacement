@@ -8,7 +8,10 @@ CC = g++
 CFLAGS = -Wall -std=c++11
 
 # Source files
-SRCS = main.cpp
+SRCS = main.cpp physicalMemory.cpp queue.cpp pageReplacementAlgorithm.cpp manager.cpp
+
+# Header files (not strictly necessary in the Makefile but added for clarity)
+HDRS = physicalMemory.h queue.h pageReplacementAlgorithm.h manager.h
 
 # Object files
 OBJS = $(SRCS:.cpp=.o)
@@ -18,7 +21,7 @@ all: $(OUTPUT)
 $(OUTPUT): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
-%.o: %.cpp
+%.o: %.cpp $(HDRS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
