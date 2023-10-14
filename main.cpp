@@ -1,12 +1,29 @@
 #include "manager.h"
+#include <vector>
+#include <iostream>
 
-int main() {
-    int pages[] = {0, 1, 7, 2, 3, 2, 7, 6, 5, 7, 2};
-    Manager manager(4);
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <number_of_frames>" << std::endl;
+        return 1;
+    }
+
+    int numberOfFrames = std::stoi(argv[1]);
+    std::vector<int> pages;
+    int page;
     
-    manager.executeFIFO(pages, sizeof(pages)/sizeof(pages[0]));
-    manager.executeLRU(pages, sizeof(pages)/sizeof(pages[0]));
-    manager.executeOPT(pages, sizeof(pages)/sizeof(pages[0]));
+    while (std::cin >> page) {
+        pages.push_back(page);
+    }
+
+    int refsAmt = pages.size();
+    Manager manager(numberOfFrames);
+
+    std::cout << numberOfFrames << " quadros" << std::endl;
+    std::cout << refsAmt << " refs" << std::endl;
+    manager.executeFIFO(pages.data(), refsAmt);
+    manager.executeLRU(pages.data(), refsAmt);
+    manager.executeOPT(pages.data(), refsAmt);
     
     return 0;
 }
