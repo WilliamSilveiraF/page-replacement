@@ -16,14 +16,14 @@ int main(int argc, char* argv[]) {
         pages.push_back(page);
     }
 
-    int refsAmt = pages.size();
+    int totalPages = pages.size();
     Manager manager(numberOfFrames);
 
     std::cout << numberOfFrames << " quadros" << std::endl;
-    std::cout << refsAmt << " refs" << std::endl;
-    manager.executeFIFO(pages.data(), refsAmt);
-    manager.executeLRU(pages.data(), refsAmt);
-    manager.executeOPT(pages.data(), refsAmt);
+    std::cout << totalPages << " refs" << std::endl;
+    manager.executeFIFO(pages.data(), totalPages);
+    manager.executeLRU(pages.data(), totalPages);
+    manager.executeOPT(pages.data(), totalPages);
     
     return 0;
 }

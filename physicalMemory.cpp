@@ -23,3 +23,7 @@ void PhysicalMemory::removePage(int page) {
 size_t PhysicalMemory::getCapacity() {
     return capacity;
 }
+
+std::unordered_set<int> PhysicalMemory::getPages() const {
+    return pages;
+}

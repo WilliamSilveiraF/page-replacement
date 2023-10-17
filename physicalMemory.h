@@ -17,6 +17,7 @@ public:
     void addPage(int page);
     void removePage(int page);
     size_t getCapacity();
+    std::unordered_set<int> getPages() const;
 };
 
 #endif

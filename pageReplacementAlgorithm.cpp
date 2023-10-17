@@ -4,9 +4,9 @@ PageReplacementAlgorithm::PageReplacementAlgorithm(size_t cap) : physicalMemory(
 
 FIFO::FIFO(size_t cap) : PageReplacementAlgorithm(cap) {}
 
-int FIFO::getPageFaults(int pages[], int n) {
+int FIFO::getPageFaults(int pages[], int totalPages) {
     int page_faults = 0;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < totalPages; i++) {
         if (!physicalMemory.contains(pages[i])) {
             if (physicalMemory.isFull()) {
                 int oldestPage = pagesQueue.dequeue();
@@ -22,37 +22,41 @@ int FIFO::getPageFaults(int pages[], int n) {
 
 OPT::OPT(size_t cap) : PageReplacementAlgorithm(cap) {}
 
-int OPT::predict(int pg[], std::vector<int>& fr, int pn, int index) {
-    int res = -1, farthest = index;
-    for (size_t i = 0; i < fr.size(); i++) {
+int OPT::predict(int pages[], int totalPages, int currentIndex) {
+    int frameToReplace = -1;
+    int latestUsageIndex = currentIndex;
+
+    for (int page : physicalMemory.getPages()) {
         int j;
-        for (j = index; j < pn; j++) {
-            if (fr[i] == pg[j]) {
-                if (j > farthest) {
-                    farthest = j;
-                    res = i;
+        for (j = currentIndex; j < totalPages; j++) {
+            if (page == pages[j]) {
+                if (j > latestUsageIndex) {
+                    latestUsageIndex = j;
+                    frameToReplace = page;
                 }
                 break;
             }
         }
-        if (j == pn)
-            return i;
+
+        if (j == totalPages) return page;
     }
-    return (res == -1) ? 0 : res;
+
+    return (frameToReplace == -1) ? *physicalMemory.getPages().begin() : frameToReplace;
 }
 
-int OPT::getPageFaults(int pages[], int n) {
-    std::vector<int> fr;
+int OPT::getPageFaults(int pages[], int totalPages) {
     int page_faults = 0;
-    for (int i = 0; i < n; i++) {
-        if(find(fr.begin(), fr.end(), pages[i]) != fr.end()) {
+
+    for (int i = 0; i < totalPages; i++) {
+        if(physicalMemory.contains(pages[i])) {
             continue;
         }
-        if (fr.size() < physicalMemory.getCapacity()) {
-            fr.push_back(pages[i]);
+        if (!physicalMemory.isFull()) {
+            physicalMemory.addPage(pages[i]);
         } else {
-            int j = predict(pages, fr, n, i + 1);
-            fr[j] = pages[i];
+            int pageToRemove = predict(pages, totalPages, i + 1);
+            physicalMemory.removePage(pageToRemove);
+            physicalMemory.addPage(pages[i]);
         }
         page_faults++;
     }
@@ -61,9 +65,9 @@ int OPT::getPageFaults(int pages[], int n) {
 
 LRU::LRU(int cap) : PageReplacementAlgorithm(cap), time(0) {}
 
-int LRU::getPageFaults(int pages[], int n) {
+int LRU::getPageFaults(int pages[], int totalPages) {
     int page_faults = 0;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < totalPages; i++) {
         time++;
         if (!physicalMemory.contains(pages[i])) {
             if (physicalMemory.isFull()) {

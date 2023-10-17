@@ -11,9 +11,9 @@ private:
 
 public:
     Manager(size_t cap);
-    void executeFIFO(int pages[], int n);
-    void executeOPT(int pages[], int n);
-    void executeLRU(int pages[], int n);
+    void executeFIFO(int pages[], int totalPages);
+    void executeOPT(int pages[], int totalPages);
+    void executeLRU(int pages[], int totalPages);
 };
 
 #endif
