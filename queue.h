@@ -1,16 +1,26 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include <queue>
-
 class Queue {
 private:
-    std::queue<int> q;
+    struct Node {
+        int data;
+        Node* next;
+        
+        Node(int value) : data(value), next(nullptr) {}
+    };
+
+    Node* front;
+    Node* tail;
 
 public:
+    Queue() : front(nullptr), tail(nullptr) {}
+
+    ~Queue();
+
     void enqueue(int page);
     int dequeue();
     bool isEmpty();
 };
 
-#endif // QUEUE_H
+#endif
